@@ -96,12 +96,15 @@ if __name__=="__main__":
         quat = randomQuat()
         eucov = convert(quat, quatcov)
     print("completed all random test cases. Proceeding")
-    
-    quat = np.ones(4) / np.linalg.norm(np.ones(4))
+    quat = -1.0 * np.ones(4) / np.linalg.norm(np.ones(4))
     print("Attempting numerically instable version: {}".format(quat))
-
-    eucov = convert(quat, quatcov)
-    print(eucov)
+    # Warnings as errors from: https://stackoverflow.com/questions/15933741/how-do-i-catch-a-numpy-warning-like-its-an-exception-not-just-for-testing
+    with np.errstate(divide='raise'):
+        try:
+            eucov = convert(quat, quatcov)
+            print(eucov)
+        except FloatingPointError as fpe:
+            print(fpe)
 
     
 
