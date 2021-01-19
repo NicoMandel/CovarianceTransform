@@ -4,6 +4,7 @@ Repository for writing code to turn the
 Workflow
 1. [x] Python writing function
 2. [ ] Eigen Writing function
+    * [ ] Compilation with `g++ -o cov cov.cpp -I/usr/include/eigen3`
 3. [ ] Pybind11 - for Eigen to python
 3. [ ] Alternative - using GTEST to test the covariance transformation
 
