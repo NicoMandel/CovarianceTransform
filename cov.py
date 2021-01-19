@@ -80,19 +80,29 @@ def randomQuat():
     unitquat[1] = np.sqrt(1-u[0]) * np.cos(2*np.pi*u[1])
     unitquat[2] = np.sqrt(u[0]) * np.sin(2*np.pi*u[2])
     unitquat[3] = np.sqrt(u[0]) * np.cos(2*np.pi*u[2])
+    unitquat = unitquat / np.linalg.norm(unitquat)
     return unitquat
 
 
 if __name__=="__main__":
     # seed the random generator
     np.random.seed(1)
-    # TODO: Find reasonable values to put into the covariances
-    
+
+    # dummy covariance
     quatcov = np.ones((4,4))
 
-    quat = randomQuat()
+    quatlist = []
+    for i in range(1000):
+        quat = randomQuat()
+        eucov = convert(quat, quatcov)
+    print("completed all random test cases. Proceeding")
+    
+    quat = np.ones(4) / np.linalg.norm(np.ones(4))
+    print("Attempting numerically instable version: {}".format(quat))
 
     eucov = convert(quat, quatcov)
     print(eucov)
+
+    
 
     
