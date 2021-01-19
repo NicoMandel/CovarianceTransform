@@ -44,7 +44,7 @@ def jacobian(quat):
     phi4 = psi1
 
     # Row 2 of the Jacobian
-    theta_norm = 2 / np.sqrt(1 - 4 * ((quat[2] * quat[3] + quat[1] * quat[4])**2)) 
+    theta_norm = 2 / np.sqrt(1 - 4 * ((quat[1] * quat[2] + quat[0] * quat[3])**2)) 
 
     theta1 = theta_norm * quat[3]
     theta2 = theta_norm * quat[2]
@@ -69,13 +69,30 @@ def jacobian(quat):
 
     return jac
 
+def randomQuat():
+    """
+        Following The definition used by Eigen
+        Linked here: http://planning.cs.uiuc.edu/node198.html
+    """
+    unitquat = np.zeros(4)
+    u = np.random.rand(3)
+    unitquat[0] = np.sqrt(1-u[0]) * np.sin(2*np.pi*u[1])
+    unitquat[1] = np.sqrt(1-u[0]) * np.cos(2*np.pi*u[1])
+    unitquat[2] = np.sqrt(u[0]) * np.sin(2*np.pi*u[2])
+    unitquat[3] = np.sqrt(u[0]) * np.cos(2*np.pi*u[2])
+    return unitquat
+
 
 if __name__=="__main__":
+    # seed the random generator
+    np.random.seed(1)
     # TODO: Find reasonable values to put into the covariances
+    
     quatcov = np.ones((4,4))
 
-    quat = np.ones(4) / np.linalg.norm(np.ones(4))
+    quat = randomQuat()
 
     eucov = convert(quat, quatcov)
+    print(eucov)
 
     
