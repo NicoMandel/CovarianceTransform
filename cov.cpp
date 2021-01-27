@@ -15,11 +15,11 @@ void convert(Matrix3d& eul_cov, Quaterniond quat, const Matrix4d quatcov){
 }
 
 void jacobian(MatrixXd& jac, Quaterniond quat){
-    // preliminary, temporary values
-    double q32n = quat.y() - quat.x();
-    double q32p = quat.y() + quat.x();
-    double q41p = quat.z() + quat.w();
-    double q41n = quat.z() - quat.x();
+    // convention in equation 2.8, p. 12 of the thesis
+    double q32n = quat.z() - quat.y();
+    double q32p = quat.z() + quat.y();
+    double q41p = quat.w() + quat.x();
+    double q41n = quat.w() - quat.x();
 
     double normalizerp = q32p*q32p + q41p*q41p;
     double normalizern = q32n*q32n + q41n*q41n;
@@ -58,15 +58,21 @@ void jacobian(MatrixXd& jac, Quaterniond quat){
 
 int main(int argc, char** argv){
 
-    Matrix4d quatcov;
-    Quaterniond quat = Quaterniond::UnitRandom(); //initialization order is important, see doc. w, x, y, z. Internal storage is xyz, w
-    // TODO: fill in values
-
-    // Get the converted data back
+    Matrix4d quatcov = MatrixXd::Ones(4,4);
+    Quaterniond quat;
     Matrix3d eul_cov;
-    convert(eul_cov, quat, quatcov);
-    
-    std::cout<<eul_cov<<std::endl;    
+
+    for (int i=0; i < 100; ++i){
+        quat = Quaterniond::UnitRandom(); //initialization order is important, see doc. w, x, y, z. Internal storage is xyz, w
+        convert(eul_cov, quat, quatcov);
+        // std::cout << "Conversion for \nw: " << quat.w() << " x: " << quat.x() << " y: " <<quat.y() << " z: " << quat.z() << "\nWorks" << std::endl;
+        // std::cout<<eul_cov << std::endl;
+    }
+
+    // Edge case:
+    quat = Quaterniond(0.5, 0.5, 0.5, 0.5);
+    convert(eul_cov, quat, quatcov);    
+    // std::cout<<eul_cov<<std::endl;   
 
     return 0;
 }
